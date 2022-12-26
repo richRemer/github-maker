@@ -4,6 +4,9 @@ import express from "express";
 import morgan from "morgan";
 import {body, json, signed, systemdConnect, DBusError} from "github-maker";
 
+// disable debug logs by default
+if (!process.env.DEBUG) console.debug = () => {};
+
 const app = express();
 const port = process.env.GITHUB_PORT || 6549;
 const secret = process.env.GITHUB_SECRET || randomBytes(16).toString("hex");
