@@ -56,7 +56,7 @@ server.listen(port, function() {
 });
 
 // check for systemd unit and warn if not found
-const unit = "github-build@.service";
+const unit = "github-build@nonce.service";
 const state = await systemd.GetUnitFileState(unit).catch(() => false);
 
 if (state === "enabled" || state === "disabled") {
