@@ -1,0 +1,17 @@
+[Unit]
+Requires=github-workspace@%i.service github-checkout@%i.service
+After=github-workspace@%i.service github-checkout@%i.service
+JoinsNamespaceOf=github-workspace@%i.service
+
+[Service]
+Environment=BRANCH=master
+Environment=SRC_DIR=/usr/local/src/github
+EnvironmentFile=-/etc/github/env
+EnvironmentFile=-/etc/github/%I
+
+Type=oneshot
+ExecStartPre=/usr/bin/ls /tmp/%I
+ExecStart=/usr/bin/make -C /tmp/%I
+
+User=github
+PrivateTmp=on

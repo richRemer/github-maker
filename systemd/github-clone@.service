@@ -1,0 +1,10 @@
+[Service]
+Environment=SRC_DIR=/usr/local/src/github
+EnvironmentFile=-/etc/github/env
+EnvironmentFile=-/etc/github/%I
+
+Type=oneshot
+ExecStartPre=/bin/mkdir -p ${SRC_DIR}/%I.git
+ExecStart=/usr/bin/git clone --bare --shared git@github.com:%I.git ${SRC_DIR}/%I.git
+
+User=github

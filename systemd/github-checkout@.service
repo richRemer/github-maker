@@ -1,0 +1,17 @@
+[Unit]
+Requires=github-workspace@%i.service 
+After=github-workspace@%i.service 
+JoinsNamespaceOf=github-workspace@%i.service
+
+[Service]
+Environment=BRANCH=master
+Environment=SRC_DIR=/usr/local/src/github
+EnvironmentFile=-/etc/github/env
+EnvironmentFile=-/etc/github/%I
+
+Type=oneshot
+ExecStartPre=/bin/mkdir -p /tmp/%I
+ExecStart=/usr/bin/git --work-tree /tmp/%I --git-dir ${SRC_DIR}/%I.git reset --hard ${BRANCH}
+
+User=github
+PrivateTmp=on

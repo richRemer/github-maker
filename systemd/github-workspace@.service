@@ -1,0 +1,14 @@
+# Unit to maintain private workspace directory
+
+[Unit]
+StopWhenUnneeded=on
+
+[Service]
+Type=oneshot
+RemainAfterExit=on
+ExecStart=/bin/touch /tmp
+ExecStop=/bin/echo removing workspace for %I
+
+User=github
+PrivateTmp=on
+
