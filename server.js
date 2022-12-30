@@ -1,4 +1,5 @@
 import http from "http";
+import {join} from "path";
 import {randomBytes} from "crypto";
 import express from "express";
 import morgan from "morgan";
@@ -7,6 +8,7 @@ import {body, json, signed, log, invocations, systemdConnect, DBusError} from "g
 // disable debug logs by default
 if (!process.env.DEBUG) console.debug = () => {};
 
+const pub = new URL("pub", import.meta.url).pathname;
 const app = express();
 const port = process.env.GITHUB_PORT || 6549;
 const secret = process.env.GITHUB_SECRET || randomBytes(16).toString("hex");
@@ -16,6 +18,10 @@ const systemd = await systemdConnect();
 app.use(morgan("tiny"));
 app.use(body());
 app.use(json());
+
+app.get("/", (req, res) => {
+  res.sendFile(join(pub, "index.html"));
+});
 
 app.post("/", signed(secret), async (req, res) => {
   const repo = req.body?.repository?.full_name;
