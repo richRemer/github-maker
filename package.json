@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/richRemer/github-runner.git"
+    "url": "git+ssh://git@github.com/richRemer/github-maker.git"
   },
   "author": "Richard Remer <reanjr@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/richRemer/github-runner/issues"
+    "url": "https://github.com/richRemer/github-maker/issues"
   },
-  "homepage": "https://github.com/richRemer/github-runner#readme",
+  "homepage": "https://github.com/richRemer/github-maker#readme",
   "dependencies": {
     "bytesized": "^2.0.0",
     "dbus": "^1.0.7",
