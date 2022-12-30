@@ -2,7 +2,7 @@ import http from "http";
 import {randomBytes} from "crypto";
 import express from "express";
 import morgan from "morgan";
-import {body, json, signed, systemdConnect, DBusError} from "github-maker";
+import {body, json, signed, log, invocations, systemdConnect, DBusError} from "github-maker";
 
 // disable debug logs by default
 if (!process.env.DEBUG) console.debug = () => {};
@@ -44,6 +44,37 @@ app.post("/", signed(secret), async (req, res) => {
 app.all("/", (req, res) => {
   res.set("Allow", "POST");
   res.sendStatus(405);
+});
+
+app.get("/:org/:repo/logs", async (req, res) => {
+  const ids = [];
+  const {org, repo} = req.params;
+  const unit = `github-build@${org}-${repo}`; // TODO: escape
+  const url = new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`);
+
+  res.set("Content-Type", "text/uri-list");
+
+  for await (const id of invocations(unit)) {
+    res.write(new URL(`log/${id}`, url) + "\r\n");
+  }
+
+  res.end();
+});
+
+app.get("/:org/:repo/log/:id", async (req, res) => {
+  const {id, org, repo} = req.params;
+  const unit = `github-build@${org}-${repo}.service`; // TODO: escape
+
+  res.set("Content-Type", "application/x-ndjson");
+
+  for await (const entry of log(id)) {
+    // only deliver logs for the appropriate unit
+    if (entry._SYSTEMD_UNIT === unit) {
+      res.write(JSON.stringify(entry) + "\n");
+    }
+  }
+
+  res.end();
 });
 
 app.all("*", (req, res) => {
