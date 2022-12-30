@@ -6,6 +6,8 @@ default: build
 
 build: node_modules
 
+installer: $(installer)
+
 install: $(installer)
 	npm install -g $<
 
