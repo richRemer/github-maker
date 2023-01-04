@@ -55,6 +55,26 @@ app.all("/", (req, res) => {
   res.sendStatus(405);
 });
 
+app.get("/projects", async (req, res) => {
+  res.set("Content-Type", "text/uri-list");
+
+  for await (const unit of dependencies("github-build.target")) {
+    const uri = unit.replace("-", "/");   // TODO: handle more escapes
+    res.write(new URL(uri, req.fullURL) + "\r\n");
+  }
+
+  res.end();
+});
+
+app.get("/:org/:repo", async (req, res) => {
+  const {org, repo} = req.params;
+  const name = `${org}/${repo}`;    // TODO: handle escapes?
+  const self = {href: req.fullURL};
+  const logs = {title: "logs", href: new URL("logs", req.fullURL + "/")};
+  const services = []
+  const _links = {self};
+});
+
 app.get("/:org/:repo/logs", async (req, res) => {
   const ids = [];
   const {org, repo} = req.params;
