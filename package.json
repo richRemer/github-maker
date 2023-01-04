@@ -1,6 +1,6 @@
 {
   "name": "github-maker",
-  "version": "0.0.0-alpha7",
+  "version": "0.0.0-alpha8",
   "description": "GitHub webhooks daemon for building Make-based projects",
   "type": "module",
   "bin": {
@@ -26,6 +26,7 @@
     "express": "^4.18.2",
     "isomorphic-git": "^1.21.0",
     "morgan": "^1.10.0",
-    "smtp-client": "^0.4.0"
+    "smtp-client": "^0.4.0",
+    "systemd-escape": "^1.0.0-beta1"
   }
 }

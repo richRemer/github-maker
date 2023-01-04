@@ -3,6 +3,7 @@ import {join} from "path";
 import {randomBytes} from "crypto";
 import express from "express";
 import morgan from "morgan";
+import escape from "systemd-escape";
 import {body, json, signed, url} from "github-maker";
 import {log, invocations, systemdConnect, DBusError} from "github-maker";
 
@@ -57,13 +58,13 @@ app.all("/", (req, res) => {
 app.get("/:org/:repo/logs", async (req, res) => {
   const ids = [];
   const {org, repo} = req.params;
-  const unit = `github-build@${org}-${repo}`; // TODO: escape
-  const url = req.fullURL();
+  const instance = escape(`${org}/${repo}`);
+  const unit = `github-build@${instance}.service`;
 
   res.set("Content-Type", "text/uri-list");
 
   for await (const id of invocations(unit)) {
-    res.write(new URL(`log/${id}`, url) + "\r\n");
+    res.write(new URL(`log/${id}`, req.fullURL()) + "\r\n");
   }
 
   res.end();
@@ -71,7 +72,8 @@ app.get("/:org/:repo/logs", async (req, res) => {
 
 app.get("/:org/:repo/log/:id", async (req, res) => {
   const {id, org, repo} = req.params;
-  const unit = `github-build@${org}-${repo}.service`; // TODO: escape
+  const instance = escape(`${org}/${repo}`);
+  const unit = `github-build@${instance}.service`;
 
   res.set("Content-Type", "application/x-ndjson");
 
