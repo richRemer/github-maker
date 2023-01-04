@@ -1,6 +1,6 @@
 {
   "name": "github-maker",
-  "version": "0.0.0-alpha6",
+  "version": "0.0.0-alpha7",
   "description": "GitHub webhooks daemon for building Make-based projects",
   "type": "module",
   "bin": {

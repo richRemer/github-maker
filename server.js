@@ -3,7 +3,8 @@ import {join} from "path";
 import {randomBytes} from "crypto";
 import express from "express";
 import morgan from "morgan";
-import {body, json, signed, log, invocations, systemdConnect, DBusError} from "github-maker";
+import {body, json, signed, url} from "github-maker";
+import {log, invocations, systemdConnect, DBusError} from "github-maker";
 
 // disable debug logs by default
 if (!process.env.DEBUG) console.debug = () => {};
@@ -18,6 +19,7 @@ const systemd = await systemdConnect();
 app.use(morgan("tiny"));
 app.use(body());
 app.use(json());
+app.use(url());
 
 app.get("/", (req, res) => {
   res.sendFile(join(pub, "index.html"));
@@ -56,7 +58,7 @@ app.get("/:org/:repo/logs", async (req, res) => {
   const ids = [];
   const {org, repo} = req.params;
   const unit = `github-build@${org}-${repo}`; // TODO: escape
-  const url = new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`);
+  const url = req.fullURL();
 
   res.set("Content-Type", "text/uri-list");
 
